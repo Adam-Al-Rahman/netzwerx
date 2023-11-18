@@ -46,6 +46,11 @@ bazel run //netzwerx:netzwerx
 
 ### How to Test
 
+```markdown
+ ⚠️ Automatic Test with github [on platfrom: (windows, ubuntu)] is on the way.
+ In Development Phase: 2 -- Test
+```
+
 C++ test is done using (gtest & gmock)
 
 ```shell

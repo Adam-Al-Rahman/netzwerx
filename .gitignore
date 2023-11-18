@@ -29,3 +29,6 @@ __pycache__/
 
 # WSL
 **/*Zone.Identifier
+
+# Vscode
+.vscode/
