@@ -1,7 +1,7 @@
 <div align="center">
   <p>
     <a href="https://github.com/Adam-Al-Rahman/netzwerx" target="_blank">
-      <img width="100%" src="docs/assets/netzwerx.png"></a>
+      <img width="100%" src="docs/assets/img/netzwerx.png"></a>
   </p>
 
 <br/>
@@ -32,8 +32,33 @@ bazel build //...
 ```
 
 ```shell
-sudo bazel-bin//netzwerx/netzwerx
+bazel run @hedron_compile_commands//:refresh_all --config msan
 ```
+
+```shell
+bazel run @hedron_compile_commands//:refresh_all --config asan
+```
+
+```shell
+# Still in planning phase of development
+bazel run //netzwerx:netzwerx
+```
+
+### How to Test
+
+C++ test is done using (gtest & gmock)
+
+```shell
+bazel test //...
+```
+
+Python test is done using (pytest)
+
+```shell
+# Still in planning phase of development
+```
+
+
 
 ## The Team
 
