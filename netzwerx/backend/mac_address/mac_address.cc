@@ -8,8 +8,8 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdio>
 #include <exception>
-#include <fstream>
 #include <functional>
 #include <iostream>
 #include <stdexcept>
@@ -41,8 +41,6 @@ namespace netzwerx::backend {
  * @return an integer value, which is the system code.
  */
 
-// TODO(Adam-Al-Rahman): For command execution
-//  use https://github.com/arun11299/cpp-subprocess
 [[nodiscard]] std::string maddress_config_linux(
     const std::string& interface, const std::string& new_mac_address) {
   // TODO(Adam-Al-Rahman): run this function with specifying sudo
@@ -62,21 +60,6 @@ namespace netzwerx::backend {
                       new_mac_address});
     subprocess::call({"sudo", "ip", "link", "set", "dev", interface, "up"});
 
-    /*     std::vector<std::variant<std::string, std::nullptr_t>> commands[] = {
-            {"sudo", "ip", "link", "set", "dev", interface.c_str(), "down",
-             nullptr},
-            {"sudo", "ip", "link", "set", "dev", interface.c_str(), "address",
-             new_mac_address.c_str(), nullptr},
-            {"sudo", "ip", "link", "set", "dev", interface.c_str(), "up",
-       nullptr}};
-
-        for (const auto& command_args : commands) {
-          int result = linux_execute_command(command_args);
-          if (result != 0) {
-            std::cerr << "Error executing command. Aborting." << '\n';
-            return "error";
-          }
-        } */
   } else {
     std::cerr << "Interface " << interface << " not found." << '\n';
     return "!" + interface;
@@ -178,15 +161,8 @@ namespace netzwerx::backend {
   // Use std::filesystem for file I/O
   std::string result;
   try {
-    std::ifstream pipe(command);
-    if (!pipe.is_open()) {
-      throw std::runtime_error("Failed to open pipe!");
-    }
-
-    std::string line;
-    while (std::getline(pipe, line)) {
-      result += line;
-    }
+    result =
+        subprocess::check_output({"ip", "link", "show", interface}).buf.data();
   } catch (const std::exception& e) {
     std::cerr << "Error: " << e.what() << '\n';
     return "!" + interface;

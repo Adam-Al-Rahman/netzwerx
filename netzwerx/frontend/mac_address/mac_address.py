@@ -76,3 +76,4 @@ def mac_changer(interface: str, new_mac_address: str) -> None:
 
 
 print('___Netzwerx___')
+print(get_mac_address('eth0'))
