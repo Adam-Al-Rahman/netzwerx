@@ -28,5 +28,10 @@ def get_mac_address(arg0: str) -> str:
   """
   ...
 
+
 def regex_mac_address(arg0: str) -> str:
+  """
+  The function `regex_mac_address` is used to extract the correct format of mac address with respective operation
+  systems.
+  """
   ...

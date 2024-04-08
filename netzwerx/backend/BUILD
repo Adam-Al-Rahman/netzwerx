@@ -7,19 +7,22 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//netzwerx/core:core_platform",
+        "@com_googlesource_code_re2//:re2",
     ],
 )
 
 cc_library(
     name = "mac_address",
     srcs = ["mac_address/mac_address.cc"],
-    hdrs = ["mac_address/mac_address.h"],
+    hdrs = [
+        "mac_address/mac_address.h",
+    ],
     visibility = ["//visibility:public"],
     deps = [
         ":mac_address_utils",
         "//netzwerx/core:core_platform",
         "//netzwerx/core:super_user",
-        # "@arun11299_cpp_subprocess//:subprocess.hpp" # TODO(Adam-Al-Rahman): switch with custom method
+        "@arun11299_subprocess//:subprocess",
     ],
 )
 
@@ -31,10 +34,10 @@ cc_library(
     deps = [
         "//netzwerx/core:core_platform",
         "@com_google_googletest//:gtest_main",
+        "@arun11299_subprocess//:subprocess",
     ],
     visibility = ["//visibility:public"],
 )
-
 
 cc_test(
     name = "mac_address_test",

@@ -7,8 +7,8 @@ load("//third_party:repo.bzl", "nw_http_archive")
 load("//third_party/absl:workspace.bzl", absl = "repo")
 load("//third_party/hedron:workspace.bzl", hedron = "repo")
 load("//third_party/pybind11_abseil:workspace.bzl", pybind11_abseil = "repo")
-load("//third_party/pybind11_bazel:workspace.bzl", pybind11_bazel= "repo")
-load("//third_party/cpp_subprocess:workspace.bzl", cpp_subprocess = "repo")
+load("//third_party/pybind11_bazel:workspace.bzl", pybind11_bazel = "repo")
+load("//third_party/subprocess:workspace.bzl", subprocess = "repo")
 
 def _initialize_third_party():
     """ Load third party repositories.  See above load() statements. """
@@ -16,7 +16,7 @@ def _initialize_third_party():
     hedron()
     pybind11_abseil()
     pybind11_bazel()
-    cpp_subprocess()
+    subprocess()
 
 # Define all external repositories required by Netzwerx
 def _nw_repositories():

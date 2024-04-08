@@ -1,0 +1,6 @@
+FormatStyle: google
+
+Checks: >
+  -*,
+  bugprone-*,
+  google-*

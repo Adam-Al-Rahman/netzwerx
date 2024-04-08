@@ -1,8 +1,7 @@
-import sys
 import contextlib
 import logging.config
-
-from typing import List, Dict, Union
+import sys
+from typing import Dict, List
 
 from netzwerx import __version__
 from netzwerx.cfg.msg import CLI_ARGS
@@ -12,81 +11,81 @@ from netzwerx.cfg.operations import select_mode_fn
 MODES = 'maddr', 'nscan'
 
 CLI_HELP_MSG = \
-    f"""
-    Arguments received: {str(['netzwerx'] + sys.argv[1:])}. Netzwerx 'netzwerx' commands use the following syntax:
+  f"""
+  Arguments received: {str(['netzwerx'] + sys.argv[1:])}. Netzwerx 'netzwerx' commands use the following syntax:
 
-        netzwerx MODE ARGS
+      netzwerx MODE ARGS
 
-        Where   MODE (required) is one of {MODES}
-                ARGS (required) are any number of custom 'arg=value'
-                See all {MODES} Respectives ARGS with 'netzwerx args'
+      Where   MODE (required) is one of {MODES}
+              ARGS (required) are any number of custom 'arg=value'
+              See all {MODES} Respectives ARGS with 'netzwerx args'
 
-    1. Change mac address of a specific interface
-        netzwerx maddr if=eth0 nm=00:11:22:33:44:55
+  1. Change mac address of a specific interface
+      netzwerx maddr if=eth0 nm=00:11:22:33:44:55
 
-    2. Run special commands:
-        netzwerx help
-        netzwerx version
-        netzwerx args
+  2. Run special commands:
+      netzwerx help
+      netzwerx version
+      netzwerx args
 
-    Docs: https://github.com/Adam-Al-Rahman/netzwerx#readme
-    GitHub: https://github.com/Adam-Al-Rahman/netzwerx
-    """
+  Docs: https://github.com/Adam-Al-Rahman/netzwerx#readme
+  GitHub: https://github.com/Adam-Al-Rahman/netzwerx
+  """
 
 # Set logger
-LOGGING_NAME = "netzwerx"
+LOGGING_NAME = 'netzwerx'
 LOGGER = logging.getLogger(LOGGING_NAME)
 
 
 def colorstr(*input):
   """
-    Colors a string based on the provided color and style arguments. Utilizes ANSI escape codes.
-    See https://en.wikipedia.org/wiki/ANSI_escape_code for more details.
+  Colors a string based on the provided color and style arguments. Utilizes ANSI escape codes.
+  See https://en.wikipedia.org/wiki/ANSI_escape_code for more details.
 
-    This function can be called in two ways:
-        - colorstr('color', 'style', 'your string')
-        - colorstr('your string')
+  This function can be called in two ways:
+      - colorstr('color', 'style', 'your string')
+      - colorstr('your string')
 
-    In the second form, 'blue' and 'bold' will be applied by default.
+  In the second form, 'blue' and 'bold' will be applied by default.
 
-    Args:
-        *input (str): A sequence of strings where the first n-1 strings are color and style arguments,
-                      and the last string is the one to be colored.
+  Args:
+      *input (str): A sequence of strings where the first n-1 strings are color and style arguments,
+                    and the last string is the one to be colored.
 
-    Supported Colors and Styles:
-        Basic Colors: 'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'
-        Bright Colors: 'bright_black', 'bright_red', 'bright_green', 'bright_yellow',
-                       'bright_blue', 'bright_magenta', 'bright_cyan', 'bright_white'
-        Misc: 'end', 'bold', 'underline'
+  Supported Colors and Styles:
+      Basic Colors: 'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'
+      Bright Colors: 'bright_black', 'bright_red', 'bright_green', 'bright_yellow',
+                     'bright_blue', 'bright_magenta', 'bright_cyan', 'bright_white'
+      Misc: 'end', 'bold', 'underline'
 
-    Returns:
-        (str): The input string wrapped with ANSI escape codes for the specified color and style.
+  Returns:
+      (str): The input string wrapped with ANSI escape codes for the specified color and style.
 
-    Examples:
-        >>> colorstr('blue', 'bold', 'hello world')
-        >>> '\033[34m\033[1mhello world\033[0m'
-    """
+  Examples:
+      >>> colorstr('blue', 'bold', 'hello world')
+      >>> '\033[34m\033[1mhello world\033[0m'
+  """
   *args, string = input if len(input) > 1 else ('blue', 'bold', input[0])  # color arguments, string
   colors = {
-      'black': '\033[30m',  # basic colors
-      'red': '\033[31m',
-      'green': '\033[32m',
-      'yellow': '\033[33m',
-      'blue': '\033[34m',
-      'magenta': '\033[35m',
-      'cyan': '\033[36m',
-      'white': '\033[37m',
-      'bright_black': '\033[90m',  # bright colors
-      'bright_red': '\033[91m',
-      'bright_green': '\033[92m',
-      'bright_yellow': '\033[93m',
-      'bright_blue': '\033[94m',
-      'bright_magenta': '\033[95m',
-      'bright_cyan': '\033[96m',
-      'bright_white': '\033[97m',
-      'end': '\033[0m',  # misc
-      'bold': '\033[1m',
-      'underline': '\033[4m'}
+    'black': '\033[30m',  # basic colors
+    'red': '\033[31m',
+    'green': '\033[32m',
+    'yellow': '\033[33m',
+    'blue': '\033[34m',
+    'magenta': '\033[35m',
+    'cyan': '\033[36m',
+    'white': '\033[37m',
+    'bright_black': '\033[90m',  # bright colors
+    'bright_red': '\033[91m',
+    'bright_green': '\033[92m',
+    'bright_yellow': '\033[93m',
+    'bright_blue': '\033[94m',
+    'bright_magenta': '\033[95m',
+    'bright_cyan': '\033[96m',
+    'bright_white': '\033[97m',
+    'end': '\033[0m',  # misc
+    'bold': '\033[1m',
+    'underline': '\033[4m'}
   return ''.join(colors[x] for x in args) + f'{string}' + colors['end']
 
 
@@ -166,14 +165,15 @@ def check_dict_alignment(base: Dict, custom: Dict, e=None):
 
 def entrypoint(debug=''):
   """
-    This function is the netzwerx package entrypoint, it's responsible for parsing the command line arguments passed
-    to the package.
+  This function is the netzwerx package entrypoint, it's responsible for parsing the command line arguments passed
+  to the package.
 
-    This function allows for:
-    - change mac address `maddr`
+  This function allows for:
+  - change mac address `maddr`
+  - network scan `nscan`
 
-    It uses the package's default cfg and initializes it using the passed overrides.
-    Then it calls the CLI function with the composed cfg
+  It uses the package's default cfg and initializes it using the passed overrides.
+  Then it calls the CLI function with the composed cfg
   """
   args = (debug.split(' ') if debug else sys.argv)[1:]
   if not args:  # no arguments passed
@@ -181,9 +181,9 @@ def entrypoint(debug=''):
     return
 
   special = {
-      'help': lambda: LOGGER.info(CLI_HELP_MSG),
-      'version': lambda: LOGGER.info(__version__),
-      'args': lambda: LOGGER.info(CLI_ARGS)}
+    'help': lambda: LOGGER.info(CLI_HELP_MSG),
+    'version': lambda: LOGGER.info(__version__),
+    'args': lambda: LOGGER.info(CLI_ARGS)}
 
   full_args_dict = {**{k: None for k in MODES}, **special}
 
@@ -192,7 +192,7 @@ def entrypoint(debug=''):
   special.update({k[:-1]: v for k, v in special.items() if len(k) > 1 and k.endswith('s')})  # singular
   special = {**special, **{f'-{k}': v for k, v in special.items()}, **{f'--{k}': v for k, v in special.items()}}
 
-  current_operations = {"mode": str, "args": {}}
+  current_operations = {'mode': str, 'args': {}}
   for a in merge_equals_args(args):  # merge spaces around '=' sign
     if a.startswith('--'):
       LOGGER.warning(f"WARNING ⚠️ '{a}' does not require leading dashes '--', updating to '{a[2:]}'.")
@@ -204,21 +204,21 @@ def entrypoint(debug=''):
       try:
         k, v = parse_key_value_pair(a)
 
-        if current_operations["mode"] in MODES and v is not None:
-          current_operations["args"].update({k: v})
+        if current_operations['mode'] in MODES and v is not None:
+          current_operations['args'].update({k: v})
           LOGGER.info(f'{k.capitalize()}: {v}')
         else:
-          LOGGER.info("Please select proper mode")
+          LOGGER.info('Please select proper mode')
           LOGGER.info(CLI_HELP_MSG)
       except (NameError, SyntaxError, ValueError, AssertionError) as e:
         check_dict_alignment(full_args_dict, {a: ''}, e)
 
     elif a in MODES:
-      if a == "maddr":
-        current_operations["mode"] = "maddr"
+      if a == 'maddr':
+        current_operations['mode'] = 'maddr'
 
-      if a == "nscan":
-        current_operations["mode"] = "nscan"
+      if a == 'nscan':
+        current_operations['mode'] = 'nscan'
 
     elif a.lower() in special:
       special[a.lower()]()
@@ -226,7 +226,7 @@ def entrypoint(debug=''):
     else:
       check_dict_alignment(full_args_dict, {a: ''})
 
-  return select_mode_fn(current_operations["mode"], current_operations["args"])
+  return select_mode_fn(current_operations['mode'], current_operations['args'])
 
 
 if __name__ == '__main__':

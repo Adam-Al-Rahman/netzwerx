@@ -1,54 +1,57 @@
+/**
+ * Copyright 2023 Netzwerx
+ */
 
 #include "netzwerx/backend/utils/mac_address_utils.h"
 
 #include <ifaddrs.h>
 #include <net/if.h>
+#include <sched.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
-#include <regex>
 #include <set>
+#include <string>
+#include <vector>
 
-#include "netzwerx/core/platform/platform.h"
+// TODO(Adam-Al-Rahman): use https://github.com/google/re2
+// #include <regex>
+
+#include "re2/re2.h"
 
 namespace netzwerx::backend {
 std::string regex_mac_address(const std::string& new_mac_address) {
   // Define the regular expression pattern for a MAC address
 
-  std::string os = netzwerx::core::platform();
+  std::string pattern;
+  pattern = "^(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))";
 
-  std::regex mac_regex;
-
-  if (os == "windows") {
-    mac_regex.assign(std::regex((R"(([0-9A-Fa-f]{2}[-]){5}([0-9A-Fa-f]{2}))")));
-  } else {
-    mac_regex.assign(std::regex((R"(([0-9a-fA-F]{2}[:]){5}([0-9a-fA-F]{2}))")));
-  }
+  const RE2 mac_regex(pattern);
 
   // Search for the MAC address in the new_mac_address string
-  std::smatch match;
-
   std::string extracted_mac;
-  if (std::regex_search(new_mac_address, match, mac_regex)) {
-    // Extract and print the matched MAC address
-    extracted_mac.assign(match[0]);
-  } else {
-    extracted_mac.assign("unknown");
+  if (RE2::FullMatch(new_mac_address, mac_regex, &extracted_mac)) {
+    return extracted_mac;
   }
-  return extracted_mac;
+
+  return "unknown";
 }
 
 bool is_locally_administered(const std::string& mac_address) {
   // https://www.wikiwand.com/en/MAC_address#Ranges_of_group_and_locally_administered_addresses
 
   // Extract the first byte from the MAC address
-  std::string first_byte = mac_address.substr(0, 2);
+  const std::string first_byte = mac_address.substr(0, 2);
 
   // Convert the first byte to an integer
-  int first_byte_value = std::stoi(first_byte, nullptr, 16);
+  const int first_byte_value = std::stoi(first_byte, nullptr, 16);
 
   // Check if the second-least significant bit is set to 1
   return ((first_byte_value & 2) == 2);
@@ -61,7 +64,7 @@ bool mac_starts_00(const std::string& new_mac_address) {
 
 int linux_execute_command(const std::vector<const char*>& command_args) {
   int status = 0;
-  pid_t child_pid = fork();
+  const pid_t child_pid = fork();
 
   if (child_pid == 0) {  // This is the child process
     execvp(command_args[0], const_cast<char* const*>(command_args.data()));
@@ -77,9 +80,7 @@ int linux_execute_command(const std::vector<const char*>& command_args) {
       std::cerr << "Command failed: " << command_args[0] << '\n';
       return status;
     }
-
   } else {  // Fork failed
-
     std::cerr << "Fork failed" << '\n';
     return -1;
   }
@@ -89,24 +90,24 @@ int linux_execute_command(const std::vector<const char*>& command_args) {
 
 std::vector<std::string> get_interfaces_with_mac() {
   std::vector<std::string> interface_names;
-  int sock = socket(AF_INET, SOCK_DGRAM, 0);
+  const int sock = socket(AF_INET, SOCK_DGRAM, 0);
 
   if (sock < 0) {
-    perror("socket");
+    std::perror("socket");
     return interface_names;
   }
 
   struct if_nameindex* if_ni = if_nameindex();
   if (if_ni == nullptr) {
-    perror("if_nameindex");
+    std::perror("if_nameindex");
     close(sock);
     return interface_names;
   }
 
   for (struct if_nameindex* i = if_ni; i->if_name != nullptr; i++) {
     struct ifreq ifr;
-    memset(&ifr, 0, sizeof(ifr));
-    std::strcpy(ifr.ifr_name, i->if_name);
+    std::memset(&ifr, 0, sizeof(ifr));
+    std::snprintf(ifr.ifr_name, IFNAMSIZ, "%s", i->if_name);
 
     if (ioctl(sock, SIOCGIFHWADDR, &ifr) < 0) {
       perror("ioctl");
@@ -114,7 +115,7 @@ std::vector<std::string> get_interfaces_with_mac() {
     }
 
     auto* mac = reinterpret_cast<unsigned char*>(ifr.ifr_hwaddr.sa_data);
-    bool is_loopback = std::all_of(
+    const bool is_loopback = std::all_of(
         mac, mac + 6, [](unsigned char byte) { return byte == 0x00; });
 
     if (!is_loopback) {

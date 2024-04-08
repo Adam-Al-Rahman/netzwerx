@@ -1,8 +1,10 @@
+/**
+ * Copyright 2023 Netzwerx
+ */
+
 #include "netzwerx/backend/utils/mac_address_utils.h"
 
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "netzwerx/core/platform/platform.h"
 
 namespace netzwerx::backend {
 

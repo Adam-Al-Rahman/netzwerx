@@ -16,6 +16,10 @@ compile_commands.json
 ### Synk Commandline
 snyk
 
+### Build
+build/
+dist/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

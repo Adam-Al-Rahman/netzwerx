@@ -1,23 +1,19 @@
-import datetime
+import codecs
 import fnmatch
 import os
-import platform
-import re
-import sys
 
-from setuptools import Command
-from setuptools import find_namespace_packages
-from setuptools import setup
+from setuptools import Command, find_namespace_packages, setup
 from setuptools.command.install import install as InstallCommandBase
 from setuptools.dist import Distribution
+
 from netzwerx import __version__
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with codecs.open(os.path.join(here, "Readme.md"), encoding="utf-8") as fh:
-  long_description = "\n" + fh.read()
+with codecs.open(os.path.join(here, 'Readme.md'), encoding='utf-8') as fh:
+  long_description = '\n' + fh.read()
 
-PROJECT_NAME = "netzwerx"
+PROJECT_NAME = 'netzwerx'
 _VERSION = __version__
 DESCRIPTION = 'A network module'
 LONG_DESCRIPTION = 'A package that allows to [change mac address].'
@@ -49,13 +45,13 @@ class InstallHeaders(Command):
   description = 'install C/C++ header files'
 
   user_options = [
-      ('install-dir=', 'd', 'directory to install header files to'),
-      ('force', 'f', 'force installation (overwrite existing files)'), ]
+    ('install-dir=', 'd', 'directory to install header files to'),
+    ('force', 'f', 'force installation (overwrite existing files)'), ]
 
   boolean_options = ['force']
 
   def initialize_options(self):
-    self.install_dir = None
+    self.install_dir = ''
     self.force = 0
     self.outfiles = []
 
@@ -67,7 +63,7 @@ class InstallHeaders(Command):
 
     # TODO(Adam-Al-Rahman): Add all the external headers
     external_header_locations = {
-        '/external/com_google_absl': '', }
+      '/external/com_google_absl': '', }
 
     for location in external_header_locations:
       if location in install_dir:
@@ -117,44 +113,50 @@ if os.name == 'nt':  # Windows NT architecture
 else:
   EXTENSION_NAME.append('frontend/mac_address/_pywrap_mac_address.so')
 
+# TODO(Adam-Al-Rahman): Fill the header required
+# ref: https://github.com/tensorflow/tensorflow/blob/5a948b2b33192cb50ab85510fec9d96ea81f9268/tensorflow/tools/pip_package/setup.py#L352
+headers = (list(find_files('*.h', 'netzwerx/backend/')) + list(find_files('*.h', 'netzwerx/core/')) +
+           list(find_files('*.proto', 'netzwerx/frontend/')))
+
 # TODO(Adam-Al-Rahman): Setup the collaborator_build_dependent_options
-collabrator_build_dependent_options = {
-    'cmdclass': {
-        'install_headers': InstallHeaders,
-        'install': InstallCommand, },
-    'distclass': BinaryDistribution,
-    'entry_points': {
-        'console_scripts': ["netzwerx = netzwerx.cfg:entrypoint", "nwx = netzwerx.cfg:entrypoint"], },
-    'headers': headers,
-    'include_package_data': True,
-    'packages': find_namespace_packages(),
-    'package_data': {
-        'netzwerx': EXTENSION_NAME + matches, }, }
+collaborator_build_dependent_options = {
+  'cmdclass': {
+    'install_headers': InstallHeaders,
+    'install': InstallCommand, },
+  'distclass': BinaryDistribution,
+  'entry_points': {
+    'console_scripts': ['netzwerx = netzwerx.cfg:entrypoint', 'nwx = netzwerx.cfg:entrypoint'], },
+  'headers': headers,
+  'include_package_data': True,
+  'packages': find_namespace_packages(),
+  'package_data': {
+    'netzwerx': EXTENSION_NAME + matches, }, }
 
 # Setting up
 setup(
-    name=PROJECT_NAME,
-    license='Apache 2.0',
-    license_file=LICENSE,
-    version=_VERSION.replace('-', ''),
-    author="Adam-Al-Rahman (https://atiq-ur-rehaman.netlify.app)",
-    author_email="<quodscientialegis@gmail.com>",
-    description=DESCRIPTION,
-    long_description_content_type="text/markdown",
-    long_description=long_description,
-    install_requires=["rich"],
-    keywords=['python', 'network', 'ethical hacking', 'cyber security', 'mac address'],
-    classifiers=sorted([
-        "Development Status :: 1 - Planning",
-        "Intended Audience :: Developers",
-        "Programming Language :: Python :: 3",
-        "Operating System :: Unix",
-        # "Operating System :: MacOS :: MacOS X",
-        "Operating System :: Microsoft :: Windows",
-        'Topic :: Security/Engineering',
-        'Topic :: Security/Engineering :: Cyber Security',
-        'Topic :: Security/Engineering :: Ethical Hacking',
-        'Topic :: Software Development',
-        'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: Libraries :: Python Modules', ]),
-    **collaborator_build_dependent_options)
+  name=PROJECT_NAME,
+  license='Apache 2.0',
+  # license_file="./LICENSE",
+  version=_VERSION.replace('-', ''),
+  author='Adam-Al-Rahman (https://atiq-ur-rehaman.netlify.app)',
+  author_email='<quodscientialegis@gmail.com>',
+  description=DESCRIPTION,
+  long_description_content_type='text/markdown',
+  long_description=long_description,
+  install_requires=['rich'],
+  keywords=['python', 'network', 'ethical hacking', 'cyber security', 'mac address'],
+  classifiers=sorted([
+    'Development Status :: 1 - Planning',
+    'License :: OSI Approved :: Apache Software License',
+    'Intended Audience :: Developers',
+    'Operating System :: Unix',
+    # "Operating System :: MacOS :: MacOS X",
+    'Operating System :: Microsoft :: Windows',
+    'Programming Language :: Python :: 3 :: Only',
+    'Topic :: Security/Engineering',
+    'Topic :: Security/Engineering :: Cyber Security',
+    'Topic :: Security/Engineering :: Ethical Hacking',
+    'Topic :: Software Development',
+    'Topic :: Software Development :: Libraries',
+    'Topic :: Software Development :: Libraries :: Python Modules', ]),
+  **collaborator_build_dependent_options)

@@ -1,24 +1,23 @@
-#ifndef MAC_ADDRESS_H_
-#define MAC_ADDRESS_H_
+/**
+ * Copyright 2023 Netzwerx
+ */
+#ifndef NETZWERX_BACKEND_MAC_ADDRESS_MAC_ADDRESS_H_
+#define NETZWERX_BACKEND_MAC_ADDRESS_MAC_ADDRESS_H_
 
-#include <iostream>
 #include <string>
-#include <tuple>
 
 namespace netzwerx::backend {
 
-std::string mac_linux_debian(const std::string& interface,
-                             const std::string& new_mac_address);
-std::string mac_linux_arch(const std::string& interface,
-                           const std::string& new_mac_address);
-std::string mac_linux_windows(const std::string& interface,
-                              const std::string& new_mac_address);
+[[nodiscard]] std::string maddress_config_linux(
+    const std::string& interface, const std::string& new_mac_address);
+[[nodiscard]] std::string maddress_config_windows(
+    const std::string& interface, const std::string& new_mac_address);
 
-std::string get_mac_address(const std::string& interface);
+[[nodiscard]] std::string get_mac_address(const std::string& interface);
 
-std::string mac_changer(const std::string& interface,
-                        const std::string& new_mac_address);
+[[nodiscard]] std::string mac_changer(const std::string& interface,
+                                      const std::string& new_mac_address);
 
 }  // namespace netzwerx::backend
 
-#endif  // MAC_ADDRESS_H_
+#endif  // NETZWERX_BACKEND_MAC_ADDRESS_MAC_ADDRESS_H_

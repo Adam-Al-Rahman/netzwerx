@@ -1,7 +1,11 @@
-#include "platform.h"
+/**
+ * Copyright 2023 Adam-Al-Rahman
+ */
 
+#include "netzwerx/core/platform/platform.h"
+
+#include <cstddef>
 #include <fstream>
-#include <iostream>
 #include <string>
 
 #include "absl/strings/match.h"
@@ -44,7 +48,7 @@ std::string get_linux_distribution() {
   if (os_release.is_open()) {
     while (std::getline(os_release, line)) {
       if (absl::StrContains(line, "ID_LIKE=")) {
-        size_t position = line.find('=');
+        const std::size_t position = line.find('=');
         if (position != std::string::npos) {
           distribution_name = line.substr(position + 1);
           break;
@@ -69,9 +73,12 @@ std::string get_linux_distribution() {
  */
 std::string platform() {
   std::string os = get_operating_system();
-  if (os == "linux") {
-    os.assign(get_linux_distribution());
-  }
+
+  // TODO(Adam-Al-Rahman): Remove it, if(no need of specific linux distribution
+  // name);
+  // if (os == "linux") {
+  //   os.assign(get_linux_distribution());
+  // }
   return os;
 }
 

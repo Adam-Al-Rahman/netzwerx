@@ -1,5 +1,9 @@
-#ifndef PLATFORM_H_
-#define PLATFORM_H_
+/**
+ * Copyright 2023 Adam-Al-Rahman
+ */
+
+#ifndef NETZWERX_CORE_PLATFORM_PLATFORM_H_
+#define NETZWERX_CORE_PLATFORM_PLATFORM_H_
 
 #include <string>
 
@@ -12,4 +16,4 @@ std::string platform();
 
 }  // namespace netzwerx::core
 
-#endif  // PLATFORM_H_
+#endif  // NETZWERX_CORE_PLATFORM_PLATFORM_H_

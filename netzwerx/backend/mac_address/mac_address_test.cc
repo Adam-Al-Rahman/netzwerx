@@ -1,10 +1,19 @@
+/**
+ * Copyright 2023 Adam-Al-Rahman
+ */
+
+#include <string>
+#include <vector>
+
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "netzwerx/backend/mac_address/mac_address_mock.h"
+#include "netzwerx/core/platform/platform.h"
 
 namespace netzwerx::backend {
 
 TEST(MacAddressLinuxTest, CorrectMacAddress) {
-  MockMacLinuxInnerMethod mock_method;
+  const MockMacLinuxInnerMethod mock_method;
 
   EXPECT_CALL(mock_method, super_user())
       .Times(testing::AtLeast(1))
@@ -15,15 +24,9 @@ TEST(MacAddressLinuxTest, CorrectMacAddress) {
       .WillRepeatedly(
           testing::Return(std::vector<std::string>{"eth0", "lo", "wlan0"}));
 
-  // Set expectations for linux_execute_command
-  EXPECT_CALL(mock_method, linux_execute_command(testing::_))
-      .Times(3)
-      .WillRepeatedly(
-          testing::Return(0));  // Simulate successful command execution
-
-  std::string os = netzwerx::core::platform();
-  if (os == "debian") {
-    EXPECT_EQ((mac_linux_debian("eth0", "00:1A:2B:3C:5F:4E", mock_method)),
+  const std::string os = netzwerx::core::platform();
+  if (os == "linux") {
+    EXPECT_EQ((maddress_config_linux("eth0", "00:1A:2B:3C:5F:4E", mock_method)),
               "success");
 
     // TODO(Adam-Al-Rahman): Implement for non-sucess
@@ -31,13 +34,9 @@ TEST(MacAddressLinuxTest, CorrectMacAddress) {
     //           "!00:2A:3B-AA:5F:4E");
   }
 
-  if (os == "arch") {
-    EXPECT_EQ((mac_linux_arch("eth0", "00:1A:2B:3C:5F:4E", mock_method)), "success");
-
-    // TODO(Adam-Al-Rahman): Implement for non-sucess
-    // EXPECT_EQ((mac_linux_arch("eth0", "00:2A:3B-AA:5F:4E")),
-    //           "!00:2A:3B-AA:5F:4E");
-  }
+  // TODO(Adam-Al-Rahman): Implement for non-sucess
+  // EXPECT_EQ((mac_linux_arch("eth0", "00:2A:3B-AA:5F:4E")),
+  //           "!00:2A:3B-AA:5F:4E");
 }
 
 // TEST(MacAddressTest, PosStartWith00) {

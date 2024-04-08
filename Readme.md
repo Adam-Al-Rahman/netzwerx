@@ -3,7 +3,6 @@
     <a href="https://github.com/Adam-Al-Rahman/netzwerx" target="_blank">
       <img width="100%" src="docs/assets/img/netzwerx.png"></a>
   </p>
-
 <br/>
 
 [Netzwerx](https://github.com/Adam-Al-Rahman/netzwerx) is a networking python library
@@ -47,8 +46,8 @@ bazel run //netzwerx:netzwerx
 ### How to Test
 
 ```markdown
- ⚠️ Automatic Test with github [on platfrom: (windows, ubuntu)] is on the way.
- In Development Phase: 2 -- Test
+⚠️ Automatic Test with github [on platfrom: (windows, ubuntu)] is on the way.
+In Development Phase: 2 -- Test
 ```
 
 C++ test is done using (gtest & gmock)
@@ -62,8 +61,6 @@ Python test is done using (pytest)
 ```shell
 # Still in planning phase of development
 ```
-
-
 
 ## The Team
 

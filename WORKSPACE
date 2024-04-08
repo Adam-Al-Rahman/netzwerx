@@ -31,8 +31,8 @@ python_register_toolchains(
     python_version = "3.11",
 )
 
-load("@rules_python//python:pip.bzl", "pip_parse")
 load("@python//:defs.bzl", "interpreter")
+load("@rules_python//python:pip.bzl", "pip_parse")
 
 pip_parse(
     name = "py_requirements",

@@ -1,13 +1,17 @@
-#ifndef PRIVILEGE_H_
-#define PRIVILEGE_H_
+/**
+ * @copyright
+ * Copyright 2023 Adam-Al-Rahman
+ */
+
+#ifndef NETZWERX_CORE_PRIVILEGE_SUPER_USER_H_
+#define NETZWERX_CORE_PRIVILEGE_SUPER_USER_H_
 
 #include <string>
-#include <tuple>
 
 namespace netzwerx::core {
 
-std::string super_user();
+[[nodiscard]] std::string super_user();
 
 }  // namespace netzwerx::core
 
-#endif  // PRIVILEGE_H_
+#endif  // NETZWERX_CORE_PRIVILEGE_SUPER_USER_H_

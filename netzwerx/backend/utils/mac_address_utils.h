@@ -1,6 +1,9 @@
+/**
+ * Copyright 2023 Netzwerx
+ */
 
-#ifndef UTILS_H_
-#define UTILS_H_
+#ifndef NETZWERX_BACKEND_UTILS_MAC_ADDRESS_UTILS_H_
+#define NETZWERX_BACKEND_UTILS_MAC_ADDRESS_UTILS_H_
 
 #include <string>
 #include <vector>
@@ -17,4 +20,4 @@ std::vector<std::string> get_linux_network_interfaces(bool with_mac = false);
 
 }  // namespace netzwerx::backend
 
-#endif
+#endif  // NETZWERX_BACKEND_UTILS_MAC_ADDRESS_UTILS_H_

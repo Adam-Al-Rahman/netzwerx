@@ -7,13 +7,15 @@ def nw_http_archive(
         url,
         build_file = None,
         sha256 = None,
-        strip_prefix = None):
+        strip_prefix = None,
+        add_prefix = None):
     """ Downloads and creates Bazel repos for dependencies."""
 
     # TODO(@Adam-Al-Rahman):  Implement a swappable replacement for both http_archive() and
     # new_http_archive().
     http_archive(
         name = name,
+        add_prefix = add_prefix,
         url = url,
         build_file = build_file,
         sha256 = sha256,

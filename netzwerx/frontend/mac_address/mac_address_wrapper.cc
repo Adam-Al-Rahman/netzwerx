@@ -1,3 +1,7 @@
+/**
+ * Copyright 2023 Netzwerx
+ */
+
 #include "netzwerx/backend/mac_address/mac_address.h"
 #include "netzwerx/backend/utils/mac_address_utils.h"
 #include "pybind11/pybind11.h"  // from @pybind11

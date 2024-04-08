@@ -24,5 +24,3 @@ def nw_cc_test(
 # netzwerx filegroup function
 def nw_filegroup(**kwargs):
     native.filegroup(**kwargs)
-
-
