@@ -12,6 +12,9 @@ compile_commands.json
 # Compiled output -> don't check in
 /compile_commands.json
 
+### NETZWERX
+**/pyrightconfig.json
+
 
 ### Synk Commandline
 snyk

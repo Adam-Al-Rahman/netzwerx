@@ -139,7 +139,7 @@ setup(
   # license_file="./LICENSE",
   version=_VERSION.replace('-', ''),
   author='Adam-Al-Rahman (https://atiq-ur-rehaman.netlify.app)',
-  author_email='<quodscientialegis@gmail.com>',
+  author_email='<adama.al.rahmann.dev@gmail.com>',
   description=DESCRIPTION,
   long_description_content_type='text/markdown',
   long_description=long_description,

@@ -62,7 +62,7 @@ def mac_changer(interface: str, new_mac_address: str) -> None:
   extract_mac_address = _pywrap_mac_address.regex_mac_address(new_mac_address)
 
   if (extract_mac_address == 'unknown'):
-    print('[-] Incorrect MAC Address\nNetzwerX perform FullMatch Regex')
+    print('[-] Incorrect MAC Address\nSanitization: NetzwerX perform FullMatch Regex')
   else:
     print(f'[+] Changing MAC address for {interface} to {extract_mac_address}')
 
@@ -76,4 +76,3 @@ def mac_changer(interface: str, new_mac_address: str) -> None:
 
 
 print('___Netzwerx___')
-print(get_mac_address('eth0'))

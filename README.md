@@ -1,7 +1,7 @@
 <div align="center">
   <p>
     <a href="https://github.com/Adam-Al-Rahman/netzwerx" target="_blank">
-      <img width="100%" src="docs/assets/img/netzwerx.png"></a>
+      <img alt="NetzwerX" width="100%" src="docs/assets/img/netzwerx.png"></a>
   </p>
 <br/>
 
