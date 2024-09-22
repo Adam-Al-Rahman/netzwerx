@@ -1,6 +1,7 @@
 import codecs
 import fnmatch
 import os
+import platform
 
 from setuptools import Command, find_namespace_packages, setup
 from setuptools.command.install import install as InstallCommandBase
@@ -10,7 +11,7 @@ from netzwerx import __version__
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with codecs.open(os.path.join(here, 'Readme.md'), encoding='utf-8') as fh:
+with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as fh:
   long_description = '\n' + fh.read()
 
 PROJECT_NAME = 'netzwerx'
@@ -38,10 +39,11 @@ class InstallCommand(InstallCommandBase):
 class InstallHeaders(Command):
   """Override how headers are copied.
 
-  The install_headers that comes with setuptools copies all files to
-  the same directory. But we need the files to be in a specific directory
-  hierarchy for -I <include_dir> to work correctly.
-  """
+    The install_headers that comes with setuptools copies all files to
+    the same directory. But we need the files to be in a specific directory
+    hierarchy for -I <include_dir> to work correctly.
+    """
+
   description = 'install C/C++ header files'
 
   user_options = [
@@ -61,8 +63,12 @@ class InstallHeaders(Command):
   def mkdir_and_copy_file(self, header):
     install_dir = os.path.join(self.install_dir, os.path.dirname(header))
 
+    if platform.system() == 'Windows':
+      install_dir = install_dir.replace('\\', '/')
+
     # TODO(Adam-Al-Rahman): Add all the external headers
     external_header_locations = {
+      'external/arun11299_subprocess': '',
       '/external/com_google_absl': '', }
 
     for location in external_header_locations:
@@ -109,9 +115,9 @@ for path in so_lib_paths:
 # TODO(Adam-Al-Rahman): Add all the extensions
 EXTENSION_NAME = []
 if os.name == 'nt':  # Windows NT architecture
-  EXTENSION_NAME.append('frontend/mac_address/_pywrap_mac_address.pyd')
+  EXTENSION_NAME.append('netzwerx/frontend/mac/_pywrap_mac_address.pyd')
 else:
-  EXTENSION_NAME.append('frontend/mac_address/_pywrap_mac_address.so')
+  EXTENSION_NAME.append('netzwerx/frontend/mac/_pywrap_mac_address.so')
 
 # TODO(Adam-Al-Rahman): Fill the header required
 # ref: https://github.com/tensorflow/tensorflow/blob/5a948b2b33192cb50ab85510fec9d96ea81f9268/tensorflow/tools/pip_package/setup.py#L352
@@ -125,7 +131,9 @@ collaborator_build_dependent_options = {
     'install': InstallCommand, },
   'distclass': BinaryDistribution,
   'entry_points': {
-    'console_scripts': ['netzwerx = netzwerx.cfg:entrypoint', 'nwx = netzwerx.cfg:entrypoint'], },
+    'console_scripts': [
+      'netzwerx = netzwerx.cfg:entrypoint',
+      'nwx = netzwerx.cfg:entrypoint', ], },
   'headers': headers,
   'include_package_data': True,
   'packages': find_namespace_packages(),
@@ -138,8 +146,8 @@ setup(
   license='Apache 2.0',
   # license_file="./LICENSE",
   version=_VERSION.replace('-', ''),
-  author='Adam-Al-Rahman (https://atiq-ur-rehaman.netlify.app)',
-  author_email='<adama.al.rahmann.dev@gmail.com>',
+  author='Adam-Al-Rahman (https://atiq-urrehaman.netlify.app)',
+  author_email='<adam.al.rahman.dev@gmail.com>',
   description=DESCRIPTION,
   long_description_content_type='text/markdown',
   long_description=long_description,
@@ -159,4 +167,5 @@ setup(
     'Topic :: Software Development',
     'Topic :: Software Development :: Libraries',
     'Topic :: Software Development :: Libraries :: Python Modules', ]),
-  **collaborator_build_dependent_options)
+  **collaborator_build_dependent_options,
+)

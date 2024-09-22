@@ -1,6 +1,6 @@
 from typing import Callable, Dict
 
-from netzwerx.frontend.mac_address.mac_address import get_mac_address, mac_changer
+from netzwerx.frontend.mac.mac_address import get_mac_address, mac_changer
 
 
 def get_mode_args():

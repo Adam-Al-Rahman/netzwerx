@@ -10,8 +10,7 @@ from netzwerx.cfg.operations import select_mode_fn
 # Define valid modes
 MODES = 'maddr', 'nscan'
 
-CLI_HELP_MSG = \
-  f"""
+CLI_HELP_MSG = f"""
   Arguments received: {str(['netzwerx'] + sys.argv[1:])}. Netzwerx 'netzwerx' commands use the following syntax:
 
       netzwerx MODE ARGS
@@ -34,38 +33,39 @@ CLI_HELP_MSG = \
 
 # Set logger
 LOGGING_NAME = 'netzwerx'
+logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(LOGGING_NAME)
 
 
 def colorstr(*input):
   """
-  Colors a string based on the provided color and style arguments. Utilizes ANSI escape codes.
-  See https://en.wikipedia.org/wiki/ANSI_escape_code for more details.
+    Colors a string based on the provided color and style arguments. Utilizes ANSI escape codes.
+    See https://en.wikipedia.org/wiki/ANSI_escape_code for more details.
 
-  This function can be called in two ways:
-      - colorstr('color', 'style', 'your string')
-      - colorstr('your string')
+    This function can be called in two ways:
+        - colorstr('color', 'style', 'your string')
+        - colorstr('your string')
 
-  In the second form, 'blue' and 'bold' will be applied by default.
+    In the second form, 'blue' and 'bold' will be applied by default.
 
-  Args:
-      *input (str): A sequence of strings where the first n-1 strings are color and style arguments,
-                    and the last string is the one to be colored.
+    Args:
+        *input (str): A sequence of strings where the first n-1 strings are color and style arguments,
+                      and the last string is the one to be colored.
 
-  Supported Colors and Styles:
-      Basic Colors: 'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'
-      Bright Colors: 'bright_black', 'bright_red', 'bright_green', 'bright_yellow',
-                     'bright_blue', 'bright_magenta', 'bright_cyan', 'bright_white'
-      Misc: 'end', 'bold', 'underline'
+    Supported Colors and Styles:
+        Basic Colors: 'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'
+        Bright Colors: 'bright_black', 'bright_red', 'bright_green', 'bright_yellow',
+                       'bright_blue', 'bright_magenta', 'bright_cyan', 'bright_white'
+        Misc: 'end', 'bold', 'underline'
 
-  Returns:
-      (str): The input string wrapped with ANSI escape codes for the specified color and style.
+    Returns:
+        (str): The input string wrapped with ANSI escape codes for the specified color and style.
 
-  Examples:
-      >>> colorstr('blue', 'bold', 'hello world')
-      >>> '\033[34m\033[1mhello world\033[0m'
-  """
-  *args, string = input if len(input) > 1 else ('blue', 'bold', input[0])  # color arguments, string
+    Examples:
+        >>> colorstr('blue', 'bold', 'hello world')
+        >>> '\033[34m\033[1mhello world\033[0m'
+    """
+  *args, string = (input if len(input) > 1 else ('blue', 'bold', input[0]))  # color arguments, string
   colors = {
     'black': '\033[30m',  # basic colors
     'red': '\033[31m',
@@ -85,7 +85,7 @@ def colorstr(*input):
     'bright_white': '\033[97m',
     'end': '\033[0m',  # misc
     'bold': '\033[1m',
-    'underline': '\033[4m'}
+    'underline': '\033[4m', }
   return ''.join(colors[x] for x in args) + f'{string}' + colors['end']
 
 
@@ -129,7 +129,7 @@ def merge_equals_args(args: List[str]) -> List[str]:
     if arg == '=' and 0 < i < len(args) - 1:  # merge ['arg', '=', 'val']
       new_args[-1] += f'={args[i + 1]}'
       del args[i + 1]
-    elif arg.endswith('=') and i < len(args) - 1 and '=' not in args[i + 1]:  # merge ['arg=', 'val']
+    elif (arg.endswith('=') and i < len(args) - 1 and '=' not in args[i + 1]):  # merge ['arg=', 'val']
       new_args.append(f'{arg}{args[i + 1]}')
       del args[i + 1]
     elif arg.startswith('=') and i > 0:  # merge ['arg', '=val']
@@ -165,16 +165,16 @@ def check_dict_alignment(base: Dict, custom: Dict, e=None):
 
 def entrypoint(debug=''):
   """
-  This function is the netzwerx package entrypoint, it's responsible for parsing the command line arguments passed
-  to the package.
+    This function is the netzwerx package entrypoint, it's responsible for parsing the command line arguments passed
+    to the package.
 
-  This function allows for:
-  - change mac address `maddr`
-  - network scan `nscan`
+    This function allows for:
+    - change mac address `maddr`
+    - network scan `nscan`
 
-  It uses the package's default cfg and initializes it using the passed overrides.
-  Then it calls the CLI function with the composed cfg
-  """
+    It uses the package's default cfg and initializes it using the passed overrides.
+    Then it calls the CLI function with the composed cfg
+    """
   args = (debug.split(' ') if debug else sys.argv)[1:]
   if not args:  # no arguments passed
     LOGGER.info(CLI_HELP_MSG)
@@ -183,14 +183,19 @@ def entrypoint(debug=''):
   special = {
     'help': lambda: LOGGER.info(CLI_HELP_MSG),
     'version': lambda: LOGGER.info(__version__),
-    'args': lambda: LOGGER.info(CLI_ARGS)}
+    'args': lambda: LOGGER.info(CLI_ARGS), }
 
   full_args_dict = {**{k: None for k in MODES}, **special}
 
   # Define common misuses of special commands, i.e. -h, -help, --help
   special.update({k[0]: v for k, v in special.items()})  # singular
   special.update({k[:-1]: v for k, v in special.items() if len(k) > 1 and k.endswith('s')})  # singular
-  special = {**special, **{f'-{k}': v for k, v in special.items()}, **{f'--{k}': v for k, v in special.items()}}
+  special = {
+    **special,
+    **{
+      f'-{k}': v for k, v in special.items()},
+    **{
+      f'--{k}': v for k, v in special.items()}, }
 
   current_operations = {'mode': str, 'args': {}}
   for a in merge_equals_args(args):  # merge spaces around '=' sign

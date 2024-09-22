@@ -1,13 +1,14 @@
-load("@pybind11_bazel//:build_defs.bzl", "pybind_extension")
 load("@rules_python//python:defs.bzl", "py_binary")
+load("//netzwerx:netzwerx.bzl", "nw_pybind_extension")
 
-pybind_extension(
+nw_pybind_extension(
     name = "_pywrap_mac_address",
     srcs = ["mac_address_wrapper.cc"],
-    visibility = ["//visibility:public"],
     deps = [
         "//netzwerx/backend:mac_address",
     ],
+    pytype_srcs = ["_pywrap_mac_address.pyi"],
+    visibility = ["//visibility:public"],
 )
 
 # py_library(
@@ -34,11 +35,7 @@ py_binary(
     srcs = [
         "mac_address.py",
     ],
-    data = select({
-        "@platforms//os:linux": ["_pywrap_mac_address.so"],
-        "@platforms//os:windows": ["_pywrap_mac_address.pyd"],
-        "//conditions:default": ["_pywrap_mac_address.so"],
-    }) + ["_pywrap_mac_address.pyi"],
+    deps = [":_pywrap_mac_address"],
     main = "mac_address.py",
     srcs_version = "PY3",
 )

@@ -59,7 +59,6 @@ build:dbg -c dbg
 # run @hedron_compile_commands
 # run @hedron_compile_commands//:refresh_all
 
-
 # Address sanitizer
 # CC=clang bazel build --config asan
 build:asan --strip=never
